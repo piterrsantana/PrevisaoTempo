@@ -22,10 +22,13 @@ namespace PrevisaoTempo
                     {
                         string dados_previsao = $"Latitude: {t.lat} \n" +
                                                  $"Longitude: {t.lon} \n" +
+                                                 $"Descrição: {t.description} \n" +
                                                  $"Nascer do Sol: {t.sunrise} \n" +
                                                  $"Por do Sol: {t.sunset} \n" +
                                                  $"Temp Máx: {t.temp_max} \n" +
-                                                 $"Temp Min: {t.temp_min} \n";
+                                                 $"Temp Min: {t.temp_min} \n" +
+                                                 $"Visibilidade: {t.visibility} \n" +
+                                                 $"Velocidade do Vento: {t.speed} \n";
 
                         lbl_res.Text = dados_previsao;
                     }

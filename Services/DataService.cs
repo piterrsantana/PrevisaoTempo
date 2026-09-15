@@ -38,6 +38,7 @@ namespace PrevisaoTempo.Services
                         visibility = rascunho["visibility"]?.Value<int>(),
                         sunrise = sunrise.ToString("HH:mm:ss"),
                         sunset = sunset.ToString("HH:mm:ss")
+
                     };
                 }
             }
