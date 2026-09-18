@@ -1,5 +1,6 @@
 using Newtonsoft.Json.Linq;
 using PrevisaoTempo.Models;
+using System.Net;
 
 namespace PrevisaoTempo.Services
 {
@@ -13,9 +14,16 @@ namespace PrevisaoTempo.Services
 
             using (HttpClient client = new HttpClient())
             {
-                //O HttResponseMessage sendo usado para receber a resposta da requisição HTTP feita para a API do OpenWeatherMap Contém informações sobre:status da resposta, cabeçalhos e o conteúdo retornado pela API.    
+                // HttpResponseMessage armazena a resposta HTTP enviada pela API (status code, cabeçalhos e conteúdo)
                 HttpResponseMessage resp = await client.GetAsync(url);
 
+                // Verifica se o StatusCode indica especificamente que o recurso/cidade não foi encontrado (erro 404)
+                if (resp.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return null;
+                }
+
+                // IsSuccessStatusCode retorna true se o código de status estiver na faixa de sucesso (200 a 299)
                 if (resp.IsSuccessStatusCode)
                 {
                     string json = await resp.Content.ReadAsStringAsync();
@@ -39,7 +47,6 @@ namespace PrevisaoTempo.Services
                         visibility = rascunho["visibility"]?.Value<int>(),
                         sunrise = sunrise.ToString("HH:mm:ss"),
                         sunset = sunset.ToString("HH:mm:ss")
-
                     };
                 }
             }

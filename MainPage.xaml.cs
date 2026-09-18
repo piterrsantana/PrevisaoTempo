@@ -14,14 +14,14 @@ namespace PrevisaoTempo
         {
             try
             {
-                // 1. Valida se o utilizador está sem conexão com a internet
+                // Verifica a conectividade do dispositivo antes de tentar a chamada de rede
                 if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
                 {
                     await DisplayAlertAsync("Sem Conexão", "Não há conexão com a internet. Verifique a sua rede.", "OK");
                     return;
                 }
 
-                // 2. Valida se o campo da cidade foi preenchido
+                // Garante que o campo de texto da cidade não está vazio ou nulo
                 if (!string.IsNullOrEmpty(txt_cidade.Text))
                 {
                     Tempo? t = await DataService.GetPrevisao(txt_cidade.Text);
@@ -31,8 +31,8 @@ namespace PrevisaoTempo
                         string dados_previsao = $"Latitude: {t.lat} \n" +
                                                  $"Longitude: {t.lon} \n" +
                                                  $"Descrição: {t.description} \n" +
-                                                 $"Nascer do Sol: {t.sunrise}h \n" +
-                                                 $"Por do Sol: {t.sunset}h \n" +
+                                                 $"Nascer do Sol: {t.sunrise} \n" +
+                                                 $"Por do Sol: {t.sunset} \n" +
                                                  $"Temp Máx: {t.temp_max}º \n" +
                                                  $"Temp Min: {t.temp_min}º \n" +
                                                  $"Visibilidade: {t.visibility}m \n" +
@@ -42,7 +42,7 @@ namespace PrevisaoTempo
                     }
                     else
                     {
-                        // Mensagem específica quando a cidade não é encontrada
+                        // Exibe mensagem amigável quando a API retorna que a cidade não existe (t == null)
                         await DisplayAlertAsync("Ops", "Não foi possível localizar a cidade digitada. Verifique o nome e tente novamente.", "OK");
                     }
                 }
@@ -53,12 +53,12 @@ namespace PrevisaoTempo
             }
             catch (HttpRequestException)
             {
-                // Tratamento de falhas de requisição HTTP (ex: falhas de rede durante o envio)
+                // Captura exceções da camada de transporte HTTP (falhas físicas de rede ou problemas DNS durante a requisição)
                 await DisplayAlertAsync("ERRO", "Falha ao comunicar com o servidor. Verifique a sua conexão.", "OK");
             }
             catch (Exception ex)
             {
-                // Outros erros genéricos
+                // Captura qualquer outra falha não esperada no código
                 await DisplayAlertAsync("Ops", ex.Message, "OK");
             }
         }
