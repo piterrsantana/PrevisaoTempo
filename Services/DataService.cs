@@ -9,10 +9,11 @@ namespace PrevisaoTempo.Services
         {
             Tempo? t = null;
             string chave = "6a2d2c94d965a549b1d6fa799b4b552c";
-            string url = $"https://api.openweathermap.org/data/2.5/weather?q={cidade}&units=metric&appid={chave}";
+            string url = $"https://api.openweathermap.org/data/2.5/weather?q={cidade}&units=metric&lang=pt_br&appid={chave}";
 
             using (HttpClient client = new HttpClient())
             {
+                //O HttResponseMessage sendo usado para receber a resposta da requisição HTTP feita para a API do OpenWeatherMap Contém informações sobre:status da resposta, cabeçalhos e o conteúdo retornado pela API.    
                 HttpResponseMessage resp = await client.GetAsync(url);
 
                 if (resp.IsSuccessStatusCode)

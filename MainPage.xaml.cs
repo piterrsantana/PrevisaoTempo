@@ -14,6 +14,14 @@ namespace PrevisaoTempo
         {
             try
             {
+                // 1. Valida se o utilizador está sem conexão com a internet
+                if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+                {
+                    await DisplayAlertAsync("Sem Conexão", "Não há conexão com a internet. Verifique a sua rede.", "OK");
+                    return;
+                }
+
+                // 2. Valida se o campo da cidade foi preenchido
                 if (!string.IsNullOrEmpty(txt_cidade.Text))
                 {
                     Tempo? t = await DataService.GetPrevisao(txt_cidade.Text);
@@ -23,28 +31,35 @@ namespace PrevisaoTempo
                         string dados_previsao = $"Latitude: {t.lat} \n" +
                                                  $"Longitude: {t.lon} \n" +
                                                  $"Descrição: {t.description} \n" +
-                                                 $"Nascer do Sol: {t.sunrise} \n" +
-                                                 $"Por do Sol: {t.sunset} \n" +
-                                                 $"Temp Máx: {t.temp_max} \n" +
-                                                 $"Temp Min: {t.temp_min} \n" +
-                                                 $"Visibilidade: {t.visibility} \n" +
-                                                 $"Velocidade do Vento: {t.speed} \n";
+                                                 $"Nascer do Sol: {t.sunrise}h \n" +
+                                                 $"Por do Sol: {t.sunset}h \n" +
+                                                 $"Temp Máx: {t.temp_max}º \n" +
+                                                 $"Temp Min: {t.temp_min}º \n" +
+                                                 $"Visibilidade: {t.visibility}m \n" +
+                                                 $"Velocidade do Vento: {t.speed}km/h\n";
 
                         lbl_res.Text = dados_previsao;
                     }
                     else
                     {
-                        lbl_res.Text = "Sem dados de Previsão";
+                        // Mensagem específica quando a cidade não é encontrada
+                        await DisplayAlertAsync("Ops", "Não foi possível localizar a cidade digitada. Verifique o nome e tente novamente.", "OK");
                     }
                 }
                 else
                 {
-                    lbl_res.Text = "Preencha a cidade.";
+                    await DisplayAlertAsync("Ops", "Preencha o nome da cidade", "OK");
                 }
+            }
+            catch (HttpRequestException)
+            {
+                // Tratamento de falhas de requisição HTTP (ex: falhas de rede durante o envio)
+                await DisplayAlertAsync("ERRO", "Falha ao comunicar com o servidor. Verifique a sua conexão.", "OK");
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Ops", ex.Message, "OK");
+                // Outros erros genéricos
+                await DisplayAlertAsync("Ops", ex.Message, "OK");
             }
         }
     }
